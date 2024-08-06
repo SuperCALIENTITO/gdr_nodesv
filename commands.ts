@@ -1,31 +1,18 @@
 import { ApplicationCommandData, GuildMember, ChatInputCommandInteraction, Collection, EmbedBuilder, ApplicationCommandOptionType } from "discord.js";
-import { GDRClient, PlayerStatusInfo, ServerStatus, SetGmodCommand } from ".";
+import { PlayerStatusInfo, ServerStatus, SetGmodCommand } from ".";
+import { GDRClient } from "./client";
 
 interface CommandRunOptions {client: GDRClient, interaction: ChatInputCommandInteraction}
 type CommandExecuteFunction = (options: CommandRunOptions) => Promise<any>;
-export type GDRCommand = {
-    ID: string,
-    Data: ApplicationCommandData,
-    Execute: CommandExecuteFunction,
-}
-
-
-
-/* CUSTOM FUNCTIONS - Sorry Lugent */
+export type GDRCommand = {ID: string, Data: ApplicationCommandData, Execute: CommandExecuteFunction}
 
 function FormatTime(PlayerTime: number): string {
     const cuttime = (PlayerTime / 60)
-
     let seconds = PlayerTime % 60;
     let minutes = (cuttime) % 60;
     let hours = (cuttime) / 60;
-
     return `${hours.toFixed(0)}h ${minutes.toFixed(0)}m ${seconds.toFixed(0)}s`;
 }
-
-/* CUSTOM FUNCTIONS - Sorry Lugent */
-
-
 
 export const Commands: Collection<string, GDRCommand> = new Collection<string, GDRCommand>();
 const CommandsDefinition: GDRCommand[] = [
@@ -48,9 +35,7 @@ const CommandsDefinition: GDRCommand[] = [
         },
         async Execute({client, interaction}) {
             // Embed
-            const ServerInfoEmbed = new EmbedBuilder()
-            .setColor("#00ADFF")
-
+            const ServerInfoEmbed = new EmbedBuilder().setColor("#00ADFF")
             let hostname: string = ServerStatus.hostname;
             let hostaddress: string = ServerStatus.hostaddress;
             let gamemode: string = ServerStatus.gamemode;
@@ -60,37 +45,34 @@ const CommandsDefinition: GDRCommand[] = [
             let meta: any[] = ServerStatus.meta;
 
             let ServerDescription: string = `\`\`\`
-Mapa: ${map}
-Jugadores: ${players.length}/${maxplayers} players
-Modo de juego: ${gamemode}
-\`\`\``
+                Mapa: ${map}
+                Jugadores: ${players.length}/${maxplayers} players
+                Modo de juego: ${gamemode}
+            \`\`\``
 
             let ServerPlayers: string = `\`\`\``
-
             if (players.length <= 0) {
                 ServerPlayers = ServerPlayers.concat(`\nNo one is currently playing`);
-            } else {
+            }
+            else {
                 players.sort((a, b) => a.score - b.score);
                 for (let index = 0; index < players.length; index++) {
                     const player: PlayerStatusInfo = players[index];
-                    let time = FormatTime(player.time)
+                    let time = FormatTime(player.time);
 
                     let prefix = player.bot ? `[BOT] ` : ``;
                     let status = `\n${prefix}<${player.usergroup}> ${player.name} - ${player.score} Score - ${time}`;
                     ServerPlayers = ServerPlayers.concat(status);
                 }
             }
-
             ServerPlayers = ServerPlayers.concat(`\n\`\`\``);
 
-            
             ServerInfoEmbed.setThumbnail(`https://fastdl.mapping-latam.cl/assets/img/maps/${map}.png`)
-            ServerInfoEmbed.setFooter({ "text": `${hostaddress}` })
+            ServerInfoEmbed.setFooter({"text": `${hostaddress}`})
             ServerInfoEmbed.addFields(
-                { "name": "Servidor", "value": ServerDescription },
-                { "name": "Jugadores", "value": ServerPlayers }
+                {"name": "Servidor", "value": ServerDescription},
+                {"name": "Jugadores", "value": ServerPlayers}
             )
-
             interaction.reply({content: `# ${hostname}`, embeds: [ServerInfoEmbed]});
         }
     },
@@ -112,14 +94,12 @@ Modo de juego: ${gamemode}
             // Verificar si el usuario tiene el rol requerido
             const requiredRoleID = "884222069032759302"; // Reemplaza esto con el ID de tu rol
             const member = interaction.member as GuildMember;
-            
             if (!member.roles.cache.some(role => role.id === requiredRoleID)) {
                 interaction.reply({content: "No tienes permiso para usar este comando.", ephemeral: true});
                 return;
             }
 
             const command = await interaction.options.getString("cmd", true)
-
             SetGmodCommand(command)
             interaction.reply({content: "Listo"})
         }
