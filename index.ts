@@ -51,9 +51,9 @@ export function SetGmodCommand(cmd: string) { GmodCommand.cmd = cmd; }
 let MessageList: string[][] = [];
 const GDR = new GDRClient({ChannelID: ChannelID, SteamKey: SteamKey});
 
-process.on("unhandledRejection", (error) => {
+process.on("unhandledRejection", (error: Error) => {
     GDR.WriteLog(LogType.Error, `Unhandled Rejection`);
-    GDR.WriteLog(LogType.Error, `${error}`);
+    GDR.WriteLog(LogType.Error, `${error.stack}`);
 });
 
 /*==========================

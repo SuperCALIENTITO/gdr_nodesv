@@ -11,7 +11,9 @@ function FormatTime(PlayerTime: number): string {
     let seconds = PlayerTime % 60;
     let minutes = (cuttime) % 60;
     let hours = (cuttime) / 60;
-    return `${hours.toFixed(0)}h ${minutes.toFixed(0)}m ${seconds.toFixed(0)}s`;
+    if (Number(hours.toFixed(0)) > 0) { return `${hours.toFixed(0)}s`; }
+    else if (Number(minutes.toFixed(0)) > 0) { return `${minutes.toFixed(0)}m`; }
+    return `${seconds.toFixed(0)}s`;
 }
 
 export const Commands: Collection<string, GDRCommand> = new Collection<string, GDRCommand>();
@@ -20,7 +22,15 @@ const CommandsDefinition: GDRCommand[] = [
         ID: "ping",
         Data: {
             name: "ping",
-            description: "Ping test!"
+            nameLocalizations: {
+                ["es-ES"]: "latencia",
+                ["es-419"]: "latencia"
+            },
+            description: "Ping test",
+            descriptionLocalizations: {
+                ["es-ES"]: "Prueba de latencia",
+                ["es-419"]: "Prueba de latencia"
+            }
         },
         async Execute({client, interaction}) {
             await interaction.deferReply({ephemeral: true});
@@ -31,7 +41,15 @@ const CommandsDefinition: GDRCommand[] = [
         ID: "status",
         Data: {
             name: "status",
-            description: "Gets the current state of the server (players, round information, etc)"
+            nameLocalizations: {
+                ["es-ES"]: "estado",
+                ["es-419"]: "estado"
+            },
+            description: "Gets the current state of the server (players, round information, etc)",
+            descriptionLocalizations: {
+                ["es-ES"]: "Obten el estado actual del servidor (jugadores, informacion de la ronda, entre otros)",
+                ["es-419"]: "Obten el estado actual del servidor (jugadores, informacion de la ronda, entre otros)"
+            }
         },
         async Execute({client, interaction}) {
             // Embed
@@ -44,15 +62,11 @@ const CommandsDefinition: GDRCommand[] = [
             let maxplayers: number = ServerStatus.maxplayers;
             let meta: any[] = ServerStatus.meta;
 
-            let ServerDescription: string = `\`\`\`
-                Mapa: ${map}
-                Jugadores: ${players.length}/${maxplayers} players
-                Modo de juego: ${gamemode}
-            \`\`\``
+            let ServerDescription: string = `\`\`\`\nMapa: ${map}\nJugadores: ${players.length}/${maxplayers} jugadores\nModo de juego: ${gamemode}\n\`\`\``
 
             let ServerPlayers: string = `\`\`\``
             if (players.length <= 0) {
-                ServerPlayers = ServerPlayers.concat(`\nNo one is currently playing`);
+                ServerPlayers = ServerPlayers.concat(`\nNo hay nadie jugando aun`);
             }
             else {
                 players.sort((a, b) => a.score - b.score);
@@ -61,7 +75,7 @@ const CommandsDefinition: GDRCommand[] = [
                     let time = FormatTime(player.time);
 
                     let prefix = player.bot ? `[BOT] ` : ``;
-                    let status = `\n${prefix}<${player.usergroup}> ${player.name} - ${player.score} Score - ${time}`;
+                    let status = `\n${prefix}<${player.usergroup}> ${player.name}   ${player.score}   ${time}`;
                     ServerPlayers = ServerPlayers.concat(status);
                 }
             }
@@ -80,18 +94,33 @@ const CommandsDefinition: GDRCommand[] = [
         ID: "command",
         Data: {
             name: "command",
+            nameLocalizations: {
+                ["es-ES"]: "comando",
+                ["es-419"]: "comando"
+            },
             description: "Send a command to gmod server",
+            descriptionLocalizations: {
+                ["es-ES"]: "Envia un comando al servidor de gmod",
+                ["es-419"]: "Envia un comando al servidor de gmod"
+            },
             options: [
                 {
                     name: "cmd",
+                    nameLocalizations: {
+                        ["es-ES"]: "cmd",
+                        ["es-419"]: "cmd"
+                    },
                     type: ApplicationCommandOptionType.String,
                     description: "The command to send to the gmod server",
+                    descriptionLocalizations: {
+                        ["es-ES"]: "El comando a enviar al servidor de gmod",
+                        ["es-419"]: "El comando a enviar al servidor de gmod"
+                    },
                     required: true
                 }
             ]
         },
-        async Execute({client, interaction}) {
-            // Verificar si el usuario tiene el rol requerido
+        async Execute({client, interaction}) { // Verificar si el usuario tiene el rol requerido
             const requiredRoleID = "884222069032759302"; // Reemplaza esto con el ID de tu rol
             const member = interaction.member as GuildMember;
             if (!member.roles.cache.some(role => role.id === requiredRoleID)) {
@@ -99,9 +128,9 @@ const CommandsDefinition: GDRCommand[] = [
                 return;
             }
 
-            const command = await interaction.options.getString("cmd", true)
-            SetGmodCommand(command)
-            interaction.reply({content: "Listo"})
+            const command = await interaction.options.getString("cmd", true);
+            SetGmodCommand(command);
+            interaction.reply({content: "Listo", ephemeral: true});
         }
     }
 ];
