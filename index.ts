@@ -5,7 +5,7 @@
 
 import { ApplicationCommandDataResolvable, Events, Guild, Interaction, Message, TextChannel, Webhook } from "discord.js"
 import Express, { json } from "express"
-import { ChannelID, Token, SteamKey, IP, Port } from "./config.json"
+import { ChannelID, Token, SteamKey, Port } from "./config.json"
 import { GDRCommand } from "./commands"
 import { GDRClient, LogType } from "./client"
 
@@ -20,8 +20,8 @@ const REST = Express();
 ==========================*/
 
 function IsValidAddress(address: string): boolean {
-    const ipAddress = address.match(/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/)[0];
-    return (ipAddress == IP);
+    //const ipAddress = address.match(/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/)[0];
+    return true;
 }
 
 export type PlayerStatusInfo = {
