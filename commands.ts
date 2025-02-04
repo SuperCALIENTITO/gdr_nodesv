@@ -137,7 +137,7 @@ const CommandsDefinition: GDRCommand[] = [
     {
         ID: "discord",
         Data: {
-            name: "Discord",
+            name: "discord",
             description: "Sends a notification to any connected player about the Discord server",
             descriptionLocalizations: {
                 ["es-ES"]: "Envia una notificacion a cualquier jugador conectado hacerca del servidor de Discord",
