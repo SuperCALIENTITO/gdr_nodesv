@@ -96,12 +96,14 @@ GDR.on(Events.ClientReady, async(): Promise<void> => {
         throw new Error(`Webhook found in channel ${channel.name} but is not possible to use since it's owned by ${Webhook.owner.username}`);
     }
     GDR.Webhook = Webhook;
+    GDR.WriteLog(LogType.Discord, `Got Webhook for message bridging`);
 
     let commands: ApplicationCommandDataResolvable[] = [];
     GDR.WriteLog(LogType.Discord, `Getting Commands`);
 
     GDR.Commands.forEach((Command: GDRCommand) => { commands.push(Command.Data); });
     GDR.guilds.cache.forEach(async (guild: Guild) => { await guild.commands.set(commands); });
+    GDR.WriteLog(LogType.Discord, `Got ${GDR.Commands.size} commands`);
     GDR.WriteLog(LogType.Discord, `The Bot is ready`)
 });
 
