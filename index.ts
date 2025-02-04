@@ -5,7 +5,7 @@
 
 import { ApplicationCommandDataResolvable, Events, Guild, Interaction, Message, TextChannel, Webhook } from "discord.js"
 import Express, { json } from "express"
-import { ChannelID, Token, SteamKey, Port } from "./config.json"
+import { ChannelID, Token, SteamKey, Port, DiscordLink } from "./config.json"
 import { GDRCommand } from "./commands"
 import { GDRClient, LogType } from "./client"
 
@@ -53,6 +53,11 @@ const GDR = new GDRClient({ChannelID: ChannelID, SteamKey: SteamKey});
 
 process.on("unhandledRejection", (error: Error) => {
     GDR.WriteLog(LogType.Error, `Unhandled Rejection`);
+    GDR.WriteLog(LogType.Error, `${error.stack}`);
+});
+
+process.on("uncaughtException", (error: Error) => {
+    GDR.WriteLog(LogType.Error, `Unhandled Exception`);
     GDR.WriteLog(LogType.Error, `${error.stack}`);
 });
 
@@ -128,7 +133,11 @@ GDR.on(Events.MessageCreate, async (message: Message): Promise<void> => {
 GDR.on(Events.Error, (error) => {
     GDR.WriteLog(LogType.Error, `Client Error: ${error}`);
 });
-GDR.login(Token);
+
+GDR.login(Token).catch((error) => {
+    GDR.WriteLog(LogType.Error, `Unable to log in to Discord`);
+    GDR.WriteLog(LogType.Error, `${error.stack}`);
+});
 
 /*==========================
           SERVER

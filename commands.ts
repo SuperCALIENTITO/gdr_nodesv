@@ -1,6 +1,7 @@
 import { ApplicationCommandData, GuildMember, ChatInputCommandInteraction, Collection, EmbedBuilder, ApplicationCommandOptionType } from "discord.js";
 import { PlayerStatusInfo, ServerStatus, SetGmodCommand } from ".";
 import { GDRClient } from "./client";
+import { DiscordLink } from "./config.json"
 
 interface CommandRunOptions {client: GDRClient, interaction: ChatInputCommandInteraction}
 type CommandExecuteFunction = (options: CommandRunOptions) => Promise<any>;
@@ -98,10 +99,10 @@ const CommandsDefinition: GDRCommand[] = [
                 ["es-ES"]: "comando",
                 ["es-419"]: "comando"
             },
-            description: "Send a command to gmod server",
+            description: "Send a command to Garry's Mod server",
             descriptionLocalizations: {
-                ["es-ES"]: "Envia un comando al servidor de gmod",
-                ["es-419"]: "Envia un comando al servidor de gmod"
+                ["es-ES"]: "Envia un comando al servidor de Garry's Mod",
+                ["es-419"]: "Envia un comando al servidor de Garry's Mod"
             },
             options: [
                 {
@@ -111,10 +112,10 @@ const CommandsDefinition: GDRCommand[] = [
                         ["es-419"]: "cmd"
                     },
                     type: ApplicationCommandOptionType.String,
-                    description: "The command to send to the gmod server",
+                    description: "The command to send to the Garry's Mod server",
                     descriptionLocalizations: {
-                        ["es-ES"]: "El comando a enviar al servidor de gmod",
-                        ["es-419"]: "El comando a enviar al servidor de gmod"
+                        ["es-ES"]: "El comando a enviar al servidor de Garry's Mod",
+                        ["es-419"]: "El comando a enviar al servidor de Garry's Mod"
                     },
                     required: true
                 }
@@ -128,9 +129,31 @@ const CommandsDefinition: GDRCommand[] = [
                 return;
             }
 
-            const command = await interaction.options.getString("cmd", true);
+            const command: string = await interaction.options.getString("cmd", true);
             SetGmodCommand(command);
             interaction.reply({content: "Listo", ephemeral: true});
+        }
+    },
+    {
+        ID: "discord",
+        Data: {
+            name: "Discord",
+            description: "Sends a notification to any connected player about the Discord server",
+            descriptionLocalizations: {
+                ["es-ES"]: "Envia una notificacion a cualquier jugador conectado hacerca del servidor de Discord",
+                ["es-419"]: "Envia una notificacion a cualquier jugador conectado hacerca del servidor de Discord"
+            },
+        },
+        async Execute({client, interaction}) {
+            const requiredRoleID = "884222069032759302"; // Reemplaza esto con el ID de tu rol
+            const member = interaction.member as GuildMember;
+            if (!member.roles.cache.some(role => role.id === requiredRoleID)) {
+                interaction.reply({content: "No tienes permiso para usar este comando.", ephemeral: true});
+                return;
+            }
+
+            const command: string = `say "Servidor de Discord: ${DiscordLink}"`;
+            SetGmodCommand(command);
         }
     }
 ];
