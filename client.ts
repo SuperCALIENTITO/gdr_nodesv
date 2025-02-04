@@ -5,6 +5,7 @@ import NodeCache from "node-cache";
 
 export enum LogType {
 	Discord = "\x1b[34m [Discord] \x1b[39m",
+	GMOD = "\x1b[32m [GMOD] \x1b[39m",
 	Chat = "\x1b[36m [Chat] \x1b[39m",
 	Rest = "\x1b[95m [REST] \x1b[39m",
 	Error = "\x1b[31m [Error] \x1b[39m"

@@ -172,6 +172,7 @@ REST.post("/sendmessage", async (Request, Response): Promise<void> => {
     Response.end();
 
     let sAvatar = await GDR.GetSteamAvatar(MsgInfo[0]) as string;
+    GDR.WriteLog(LogType.GMOD, `${MsgInfo[1]}: ${MsgInfo[2]}`);
     GDR.SendMessage(sAvatar, MsgInfo[1], MsgInfo[2]);
 });
 
@@ -180,6 +181,7 @@ REST.post("/sendmessagehook", async (Request, Response): Promise<void> => {
 
     let MsgInfo = Request.body;
     Response.end();
+    GDR.WriteLog(LogType.GMOD, `${MsgInfo[1]}: ${MsgInfo[2]}`);
     GDR.SendMessage(MsgInfo[0], MsgInfo[1], MsgInfo[2]);
 });
 
