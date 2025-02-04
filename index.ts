@@ -91,6 +91,10 @@ GDR.on(Events.ClientReady, async(): Promise<void> => {
         GDR.WriteLog(LogType.Discord, `The Webhook doesn't exists, creating a new one`);
         Webhook = await channel.createWebhook({name: "GDR", reason: "GM Discord Relay Webhook"});
     }
+
+    if (Webhook.owner.id != GDR.user.id) {
+        throw new Error(`Webhook found in channel ${channel.name} but is not possible to use since it's owned by ${Webhook.owner.username}`);
+    }
     GDR.Webhook = Webhook;
 
     let commands: ApplicationCommandDataResolvable[] = [];
