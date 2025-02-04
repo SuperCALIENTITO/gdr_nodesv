@@ -4,7 +4,7 @@ import { GDRCommand, Commands } from "./commands";
 import NodeCache from "node-cache";
 
 export enum LogType {
-	Discord = "\x1b[31m [Discord] \x1b[39m",
+	Discord = "\x1b[34m [Discord] \x1b[39m",
 	Chat = "\x1b[36m [Chat] \x1b[39m",
 	Rest = "\x1b[95m [REST] \x1b[39m",
 	Error = "\x1b[31m [Error] \x1b[39m"
