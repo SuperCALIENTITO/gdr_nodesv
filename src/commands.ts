@@ -1,7 +1,8 @@
 import { ApplicationCommandData, GuildMember, ChatInputCommandInteraction, Collection, EmbedBuilder, ApplicationCommandOptionType } from "discord.js";
-import { PlayerStatusInfo, ServerStatus, SetGmodCommand } from ".";
+import { PlayerStatusInfo, SetGmodCommand } from "./types";
+import { ServerStatus } from ".";
 import { GDRClient } from "./client";
-import { DiscordLink } from "./config.json"
+import { ENV } from "./env";
 
 interface CommandRunOptions {client: GDRClient, interaction: ChatInputCommandInteraction}
 type CommandExecuteFunction = (options: CommandRunOptions) => Promise<any>;
@@ -152,7 +153,7 @@ const CommandsDefinition: GDRCommand[] = [
                 return;
             }
 
-            const command: string = `say "Servidor de Discord: ${DiscordLink}"`;
+            const command: string = `say "Servidor de Discord: ${ENV.DISCORD_LINK}"`;
             SetGmodCommand(command);
         }
     }
