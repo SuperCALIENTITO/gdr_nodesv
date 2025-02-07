@@ -1,3 +1,5 @@
 name = "gdr-nodesv"
-main = "src/index.ts"
+main = "./dist/index.js"
 compatibility_date = "2025-02-07"
+
+compatibility_flags = ["nodejs_compat"]
