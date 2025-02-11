@@ -1,4 +1,4 @@
-import { Client, Collection, Webhook, GuildTextBasedChannel, GuildMember, PermissionsBitField, PermissionFlagsBits, Message, Events, TextChannel, ApplicationCommandDataResolvable, Guild, Interaction } from "discord.js";
+import { Client, Collection, Webhook, GuildTextBasedChannel, GuildMember, PermissionsBitField, PermissionFlagsBits, Message } from "discord.js";
 import { RequestOptions, request } from 'http';
 import { GDRCommand, Commands } from "./commands";
 import NodeCache from "node-cache";

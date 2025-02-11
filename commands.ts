@@ -155,6 +155,16 @@ const CommandsDefinition: GDRCommand[] = [
             const command: string = `say "Servidor de Discord: ${DiscordLink}"`;
             SetGmodCommand(command);
         }
+    },
+    {
+        ID: "player",
+        Data: {
+            name: "player",
+            description: "Gets a player's info"
+        },
+        async Execute({client, interaction}) {
+            
+        }
     }
 ];
 

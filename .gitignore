@@ -77,3 +77,6 @@ typings/
 
 # Config file
 config.json
+
+# NPM package lock file
+package-lock.json

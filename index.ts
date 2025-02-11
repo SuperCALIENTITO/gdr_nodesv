@@ -5,7 +5,7 @@
 
 import { ApplicationCommandDataResolvable, Events, Guild, Interaction, Message, TextChannel, Webhook } from "discord.js"
 import Express, { json } from "express"
-import { ChannelID, Token, SteamKey, Port, DiscordLink } from "./config.json"
+import { ChannelID, Token, SteamKey, Port } from "./config.json"
 import { GDRCommand } from "./commands"
 import { GDRClient, LogType } from "./client"
 
