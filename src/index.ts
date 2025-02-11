@@ -4,52 +4,31 @@
 ==================================================*/
 
 import { ApplicationCommandDataResolvable, Events, Guild, Interaction, Message, TextChannel, Webhook } from "discord.js"
-import Express, { json } from "express"
-import { ChannelID, Token, SteamKey, Port } from "./config.json"
+import Express, { json, Request, Response } from "express"
 import { GDRCommand } from "./commands"
 import { GDRClient, LogType } from "./client"
+
+import { ServerStatusInfo, ServerCommand } from "./types"
+import { GmodCommand, SetGmodCommand } from "./types"
+import { ENV } from "./env"
 
 /*==========================
         Main Constants
 ==========================*/
 
 const REST = Express();
+export let ServerStatus: ServerStatusInfo;
 
 /*==========================
         Functions
 ==========================*/
 
-function IsValidAddress(address: string): boolean {
-    //const ipAddress = address.match(/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/)[0];
+function IsAllowed(request: Request): boolean {
     return true;
 }
 
-export type PlayerStatusInfo = {
-    name: string,
-    usergroup: string,
-    score: number,
-    time: number,
-    bot: boolean
-};
-
-export type ServerStatusInfo = {
-    hostname: string,
-    hostaddress: string,
-    gamemode: string,
-    map: string,
-    players: PlayerStatusInfo[],
-    maxplayers: number,
-    meta: any[]
-};
-
-export type ServerCommand = {cmd: string};
-
-export let ServerStatus: ServerStatusInfo;
-export let GmodCommand: ServerCommand = {cmd: "none"};
-export function SetGmodCommand(cmd: string) { GmodCommand.cmd = cmd; }
-
 let MessageList: string[][] = [];
-const GDR = new GDRClient({ChannelID: ChannelID, SteamKey: SteamKey});
+const GDR = new GDRClient({ChannelID: ENV.DISCORD_CHANNEL, SteamKey: ENV.STEAM_KEY});
 
 process.on("unhandledRejection", (error: Error) => {
     GDR.WriteLog(LogType.Error, `Unhandled Rejection`);
@@ -140,7 +119,7 @@ GDR.on(Events.Error, (error) => {
     GDR.WriteLog(LogType.Error, `Client Error: ${error}`);
 });
 
-GDR.login(Token).catch((error) => {
+GDR.login(ENV.DISCORD_TOKEN).catch((error) => {
     GDR.WriteLog(LogType.Error, `Unable to log in to Discord`);
     GDR.WriteLog(LogType.Error, `${error.stack}`);
 });
@@ -149,24 +128,28 @@ GDR.login(Token).catch((error) => {
           SERVER
 ==========================*/
 
-REST.get("/getmessages", async (Request, Response): Promise<void> => {
-    if ( !IsValidAddress(Request.ip) ) { Response.status(403).send("Forbidden"); return; }
+REST.get("/getmessages", async (Request: Request, Response: Response): Promise<void> => {
+    if ( !IsAllowed(Request) ) { Response.status(403).send("Forbidden"); return; }
 
     Response.send(JSON.stringify(MessageList));
     MessageList = [];
 });
 
 REST.get("/command", async (Request, Response): Promise<void> => {
-    if ( !IsValidAddress(Request.ip) ) { Response.status(403).send("Forbidden"); return; }
+    if ( !IsAllowed(Request) ) { Response.status(403).send("Forbidden"); return; }
     if ( GmodCommand.cmd == "none" ) { Response.status(204).send("No Content") ; return;}
 
     Response.send(JSON.stringify({cmd: GmodCommand.cmd}))
     SetGmodCommand("none");
 })
 
+REST.get("/helloworld", async (Request, Response): Promise<void> => {
+    Response.send("<h1>STFU</h1>");
+});
+
 REST.use(json());
 REST.post("/sendmessage", async (Request, Response): Promise<void> => {
-    if ( !IsValidAddress(Request.ip) ) { Response.status(403).send("Forbidden"); return; }
+    if ( !IsAllowed(Request) ) { Response.status(403).send("Forbidden"); return; }
 
     let MsgInfo = Request.body;
     Response.end();
@@ -177,7 +160,7 @@ REST.post("/sendmessage", async (Request, Response): Promise<void> => {
 });
 
 REST.post("/sendmessagehook", async (Request, Response): Promise<void> => {
-    if ( !IsValidAddress(Request.ip) ) { Response.status(403).send("Forbidden"); return; }
+    if ( !IsAllowed(Request) ) { Response.status(403).send("Forbidden"); return; }
 
     let MsgInfo = Request.body;
     Response.end();
@@ -186,13 +169,13 @@ REST.post("/sendmessagehook", async (Request, Response): Promise<void> => {
 });
 
 REST.post("/status", async(Request, Response): Promise<void> => {
-    if ( !IsValidAddress(Request.ip) ) { Response.status(403).send("Forbidden"); return; }
+    if ( !IsAllowed(Request) ) { Response.status(403).send("Forbidden"); return; }
 
     let StatusInfo = Request.body;
     ServerStatus = StatusInfo as ServerStatusInfo;
     Response.end();
 });
 
-const Server = REST.listen(Port, () => {
-    GDR.WriteLog(LogType.Rest, `Server ready, listening on port ${Port}`);
+const Server = REST.listen(ENV.PORT, () => {
+    GDR.WriteLog(LogType.Rest, `Server ready, listening on port ${ENV.PORT}`);
 })

@@ -3,19 +3,24 @@
     "version": "2.0.0",
     "description": "Server in charge of handling interactions with discord's api",
     "author": "vicentefelipechile & lugent",
-    "main": "index.ts",
+    "main": "src/index.ts",
     "scripts": {
-        "start": "ts-node index.ts"
+        "start": "ts-node src/index.ts",
+        "build": "tsc",
+        "deploy": "npm run build && node dist/index.js"
     },
     "dependencies": {
+        "@discordjs/builders": "1.10.0",
         "discord.js": "^14.18.0",
+        "dotenv": "16.4.7",
+        "express": "4.19.2",
+        "node-cache": "5.1.2",
         "express": "^4.19.2",
-        "node-cache": "^5.1.2"
     },
     "devDependencies": {
-        "@types/express": "^4.17.21",
-        "ts-node": "^10.9.2",
-        "ts-node-dev": "^2.0.0",
-        "typescript": "^5.3.3"
+        "@types/express": "4.17.21",
+        "ts-node": "10.9.2",
+        "ts-node-dev": "2.0.0",
+        "typescript": "5.3.3"
     }
 }
