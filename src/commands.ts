@@ -71,13 +71,12 @@ const CommandsDefinition: GDRCommand[] = [
                 ServerPlayers = ServerPlayers.concat(`\nNo hay nadie jugando aun`);
             }
             else {
-                players.sort((a, b) => a.score - b.score);
                 for (let index = 0; index < players.length; index++) {
                     const player: PlayerStatusInfo = players[index];
                     let time = FormatTime(player.time);
 
                     let prefix = player.bot ? `[BOT] ` : ``;
-                    let status = `\n${prefix}<${player.usergroup}> ${player.name}   ${player.score}   ${time}`;
+                    let status = `\n${prefix}<${player.usergroup}> ${player.name} / ${time}`;
                     ServerPlayers = ServerPlayers.concat(status);
                 }
             }
