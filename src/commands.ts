@@ -76,7 +76,7 @@ const CommandsDefinition: GDRCommand[] = [
                     let time = FormatTime(player.time);
 
                     let prefix = player.bot ? `[BOT] ` : ``;
-                    let status = `\n${prefix}<${player.usergroup}> ${player.name} / ${time}`;
+                    let status = `\n${prefix}[${player.usergroup}] ${player.name} / ${time}`;
                     ServerPlayers = ServerPlayers.concat(status);
                 }
             }
