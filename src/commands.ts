@@ -74,7 +74,7 @@ const CommandsDefinition: GDRCommand[] = [
             let ServerDescription: string[] = [
                 `**__Mapa__**: ${map}`,
                 `**__Jugadores__**: ${players.length}/${maxplayers} jugadores`,
-                `**__Modo de juego__*: ${gamemode}`
+                `**__Modo de juego__**: ${gamemode}`
             ];
 
             ServerInfoEmbed.setTitle(hostname);
