@@ -1,8 +1,9 @@
 import { ApplicationCommandData, GuildMember, ChatInputCommandInteraction, Collection, EmbedBuilder, ApplicationCommandOptionType } from "discord.js";
 import { PlayerStatusInfo, SetGmodCommand } from "./types";
-import { ServerStatus } from ".";
+import { ServerEmbed, ServerStatus } from ".";
 import { GDRClient } from "./client";
 import { ENV } from "./env";
+import { table } from "table";
 
 interface CommandRunOptions {client: GDRClient, interaction: ChatInputCommandInteraction}
 type CommandExecuteFunction = (options: CommandRunOptions) => Promise<any>;
@@ -54,41 +55,51 @@ const CommandsDefinition: GDRCommand[] = [
             }
         },
         async Execute({client, interaction}) {
+            if (!ServerStatus) { // ServerEmbed
+                interaction.reply({content: "Hubo un error inesperado, intentelo denuevo.", ephemeral: true});
+                return;
+            }
+
             // Embed
             const ServerInfoEmbed = new EmbedBuilder().setColor("#00ADFF")
             let hostname: string = ServerStatus.hostname;
             let hostaddress: string = ServerStatus.hostaddress;
             let gamemode: string = ServerStatus.gamemode;
+            let gamemode_dir: string = ServerStatus.gamemode_dir;
             let map: string = ServerStatus.map;
             let players: PlayerStatusInfo[] = ServerStatus.players;
             let maxplayers: number = ServerStatus.maxplayers;
             let meta: any[] = ServerStatus.meta;
 
-            let ServerDescription: string = `\`\`\`\nMapa: ${map}\nJugadores: ${players.length}/${maxplayers} jugadores\nModo de juego: ${gamemode}\n\`\`\``
+            let ServerDescription: string[] = [
+                `**__Mapa__**: ${map}`,
+                `**__Jugadores__**: ${players.length}/${maxplayers} jugadores`,
+                `**__Modo de juego__*: ${gamemode}`
+            ];
 
-            let ServerPlayers: string = `\`\`\``
+            ServerInfoEmbed.setTitle(hostname);
+            ServerInfoEmbed.setAuthor({name: hostaddress, iconURL: ENV.DISCORD_EMBED_ICON});
+            ServerInfoEmbed.setDescription(ServerDescription.join(`\n`));
+
+            let TableString: string;
             if (players.length <= 0) {
-                ServerPlayers = ServerPlayers.concat(`\nNo hay nadie jugando aun`);
+                let TableData = [["No hay nadie jugando aun"]];
+                TableString = table(TableData, {columns: [{alignment: "center"}]});
             }
             else {
+                let TableData = [["Rango", "Jugador", "Puntaje", "Tiempo Jugado"]];
                 for (let index = 0; index < players.length; index++) {
                     const player: PlayerStatusInfo = players[index];
                     let time = FormatTime(player.time);
-
-                    let prefix = player.bot ? `[BOT] ` : ``;
-                    let status = `\n${prefix}[${player.usergroup}] ${player.name} / ${time}`;
-                    ServerPlayers = ServerPlayers.concat(status);
+                    let name = player.bot ? `[BOT] ${player.name}` : player.name;
+                    TableData.push([player.usergroup, name, player.score.toString(), time])
                 }
+                TableString = table(TableData, {columns: [{alignment: "left"}, {alignment: "left"}, {alignment: "right"}, {alignment: "right"}]});
             }
-            ServerPlayers = ServerPlayers.concat(`\n\`\`\``);
-
-            ServerInfoEmbed.setThumbnail(`https://fastdl.mapping-latam.cl/assets/img/maps/${map}.png`)
-            ServerInfoEmbed.setFooter({"text": `${hostaddress}`})
-            ServerInfoEmbed.addFields(
-                {"name": "Servidor", "value": ServerDescription},
-                {"name": "Jugadores", "value": ServerPlayers}
-            )
-            interaction.reply({content: `# ${hostname}`, embeds: [ServerInfoEmbed]});
+            ServerInfoEmbed.addFields({name: "Jugadores", value: `\`\`\`\n${TableString}\n\`\`\``})
+            ServerInfoEmbed.setImage(`${ENV.DISCORD_MAPS_LINK}${map}.png`)
+            ServerInfoEmbed.setThumbnail(`${ENV.DISCORD_GAMEMODES_LINK}${gamemode_dir}.png`)
+            interaction.reply({embeds: [ServerInfoEmbed]});
         }
     },
     {

@@ -3,12 +3,12 @@
                  TypeScript Edition
 ==================================================*/
 
-import { ApplicationCommandDataResolvable, Events, Guild, Interaction, Message, TextChannel, Webhook } from "discord.js"
+import { APIEmbed, ApplicationCommandDataResolvable, Embed, Events, Guild, Interaction, Message, TextChannel, Webhook } from "discord.js"
 import Express, { json, Request, Response } from "express"
 import { GDRCommand } from "./commands"
 import { GDRClient, LogType } from "./client"
 
-import { ServerStatusInfo, ServerCommand } from "./types"
+import { ServerStatusInfo } from "./types"
 import { GmodCommand, SetGmodCommand } from "./types"
 import { ENV } from "./env"
 
@@ -18,6 +18,7 @@ import { ENV } from "./env"
 
 const REST = Express();
 export let ServerStatus: ServerStatusInfo;
+export let ServerEmbed: APIEmbed;
 
 /*==========================
         Functions
@@ -122,6 +123,7 @@ GDR.on(Events.Error, (error) => {
 GDR.login(ENV.DISCORD_TOKEN).catch((error) => {
     GDR.WriteLog(LogType.Error, `Unable to log in to Discord`);
     GDR.WriteLog(LogType.Error, `${error.stack}`);
+    process.exit();
 });
 
 /*==========================
@@ -173,6 +175,16 @@ REST.post("/status", async(Request, Response): Promise<void> => {
 
     let StatusInfo = Request.body;
     ServerStatus = StatusInfo as ServerStatusInfo;
+    Response.end();
+});
+
+REST.post("/statusembed", async(Request, Response): Promise<void> => {
+    if ( !IsAllowed(Request) ) { Response.status(403).send("Forbidden"); return; }
+
+    let EmbedInfo = Request.body as APIEmbed;
+    if (!EmbedInfo.description) { Response.status(400).send("Bad Request"); return; }
+
+    ServerEmbed = EmbedInfo;
     Response.end();
 });
 

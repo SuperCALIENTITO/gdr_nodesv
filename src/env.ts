@@ -11,6 +11,9 @@ interface ENV_INTERFACE {
     DISCORD_KEY: string;
     DISCORD_CHANNEL: string;
     DISCORD_TOKEN: string;
+    DISCORD_MAPS_LINK: string;
+    DISCORD_GAMEMODES_LINK: string;
+    DISCORD_EMBED_ICON: string;
     DISCORD_LINK: string;
 }
 
@@ -20,5 +23,8 @@ export const ENV: ENV_INTERFACE = {
     DISCORD_KEY: process.env.DISCORD_KEY,
     DISCORD_CHANNEL: process.env.DISCORD_CHANNEL,
     DISCORD_TOKEN: process.env.DISCORD_TOKEN,
+    DISCORD_MAPS_LINK: process.env.DISCORD_MAPS_LINK,
+    DISCORD_GAMEMODES_LINK: process.env.DISCORD_GAMEMODES_LINK,
+    DISCORD_EMBED_ICON: process.env.DISCORD_EMBED_ICON,
     DISCORD_LINK: process.env.DISCORD_LINK
 };
