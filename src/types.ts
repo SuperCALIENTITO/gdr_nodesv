@@ -78,7 +78,25 @@ export type ServerStatusInfo = {
     /**
      * Extra data to be used here
      */
-    meta: any[]
+    meta: unknown
+};
+
+export enum TerrorTownRoundStatus {
+    Waiting = 1,
+    Preparing = 2,
+    InProgress = 3,
+    RoundOver = 4
+}
+
+export type TerrorTownStatus = {
+    terrorists: number;
+    traitors: number;
+    detectives: number;
+    missings: number;
+    founds: number;
+    spectators: number;
+    detective_mode: boolean;
+    state: TerrorTownRoundStatus;
 };
 
 export type ServerCommand = {cmd: string};

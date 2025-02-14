@@ -1,5 +1,5 @@
 import { ApplicationCommandData, GuildMember, ChatInputCommandInteraction, Collection, EmbedBuilder, ApplicationCommandOptionType } from "discord.js";
-import { PlayerStatusInfo, SetGmodCommand } from "./types";
+import { PlayerStatusInfo, SetGmodCommand, TerrorTownRoundStatus, TerrorTownStatus } from "./types";
 import { ServerEmbed, ServerStatus } from ".";
 import { GDRClient } from "./client";
 import { ENV } from "./env";
@@ -18,6 +18,8 @@ function FormatTime(PlayerTime: number): string {
     else if (Number(minutes.toFixed(0)) > 0) { return `${minutes.toFixed(0)}m`; }
     return `${seconds.toFixed(0)}s`;
 }
+
+function PlayingTerrorTown(): boolean { return (ServerStatus && ServerStatus.gamemode_dir === "terrortown"); }
 
 export const Commands: Collection<string, GDRCommand> = new Collection<string, GDRCommand>();
 const CommandsDefinition: GDRCommand[] = [
@@ -69,7 +71,7 @@ const CommandsDefinition: GDRCommand[] = [
             let map: string = ServerStatus.map;
             let players: PlayerStatusInfo[] = ServerStatus.players;
             let maxplayers: number = ServerStatus.maxplayers;
-            let meta: any[] = ServerStatus.meta;
+            let meta: unknown = ServerStatus.meta;
 
             let ServerDescription: string[] = [
                 `**__Mapa__**: ${map}`,
@@ -92,13 +94,38 @@ const CommandsDefinition: GDRCommand[] = [
                     const player: PlayerStatusInfo = players[index];
                     let time = FormatTime(player.time);
                     let name = player.bot ? `[BOT] ${player.name}` : player.name;
-                    TableData.push([player.usergroup, name, player.score.toString(), time])
+                    TableData.push([player.usergroup, name, player.score.toString(), time]);
                 }
                 TableString = table(TableData, {columns: [{alignment: "left"}, {alignment: "left"}, {alignment: "right"}, {alignment: "right"}]});
             }
-            ServerInfoEmbed.addFields({name: "Jugadores", value: `\`\`\`\n${TableString}\n\`\`\``})
-            ServerInfoEmbed.setImage(`${ENV.DISCORD_MAPS_LINK}${map}.png`)
-            ServerInfoEmbed.setThumbnail(`${ENV.DISCORD_GAMEMODES_LINK}${gamemode_dir}.png`)
+            ServerInfoEmbed.addFields({name: "Jugadores", value: `\`\`\`\n${TableString}\n\`\`\``});
+            ServerInfoEmbed.setImage(`${ENV.DISCORD_MAPS_LINK}${map}.png`);
+            ServerInfoEmbed.setThumbnail(`${ENV.DISCORD_GAMEMODES_LINK}${gamemode_dir}.png`);
+            if (PlayingTerrorTown()) {
+                let TerrorTownStatus = meta as TerrorTownStatus;
+
+                let TerrorTownRoundString = {
+                    [TerrorTownRoundStatus.Waiting]: "En Espera",
+                    [TerrorTownRoundStatus.Preparing]: "Preparando",
+                    [TerrorTownRoundStatus.InProgress]: "En Progreso",
+                    [TerrorTownRoundStatus.RoundOver]: "Ronda Terminada",
+                }
+                let TerrorTownDescription: string[] = [
+                    `**${TerrorTownRoundString[TerrorTownStatus.state]}**`,
+                ];
+                
+                if (TerrorTownStatus.state == TerrorTownRoundStatus.InProgress) {
+                    if (TerrorTownStatus.terrorists > 0) { TerrorTownDescription.push(`**${TerrorTownStatus.terrorists}** Terroristas`); }
+                    if (TerrorTownStatus.traitors > 0) { TerrorTownDescription.push(`**${TerrorTownStatus.traitors}** Traidores`); }
+                    if ((TerrorTownStatus.detective_mode) && (TerrorTownStatus.detectives > 0)) { TerrorTownDescription.push(`**${TerrorTownStatus.detectives}** Detective`); }
+                    if (TerrorTownStatus.spectators > 0) { TerrorTownDescription.push(`**${TerrorTownStatus.spectators}** Espectadores`); }
+                    if (TerrorTownStatus.detective_mode) {
+                        if (TerrorTownStatus.missings > 0) { TerrorTownDescription.push(`**${TerrorTownStatus.missings}** Desaparecidos`); }
+                        if (TerrorTownStatus.founds > 0) { TerrorTownDescription.push(`**${TerrorTownStatus.founds}** Muertos Confirmados`); }
+                    }
+                }
+                ServerInfoEmbed.addFields({name: "Estado de la Partida", value: TerrorTownDescription.join(`\n`)});
+            }
             interaction.reply({embeds: [ServerInfoEmbed]});
         }
     },
