@@ -3,7 +3,7 @@
                  TypeScript Edition
 ==================================================*/
 
-import { APIEmbed, ApplicationCommandDataResolvable, Embed, Events, Guild, Interaction, Message, TextChannel, Webhook } from "discord.js"
+import { APIEmbed, ApplicationCommandDataResolvable, Embed, escapeMarkdown, Events, Guild, Interaction, Message, TextChannel, Webhook } from "discord.js"
 import Express, { json, Request, Response } from "express"
 import { GDRCommand } from "./commands"
 import { GDRClient, LogType } from "./client"
@@ -157,7 +157,7 @@ REST.post("/sendmessage", async (Request, Response): Promise<void> => {
     Response.end();
 
     let sAvatar = await GDR.GetSteamAvatar(MsgInfo[0]) as string;
-    GDR.WriteLog(LogType.GMOD, `${MsgInfo[1]}: ${MsgInfo[2]}`);
+    GDR.WriteLog(LogType.GMOD, `${MsgInfo[1]}: ${escapeMarkdown(MsgInfo[2])}`);
     GDR.SendMessage(sAvatar, MsgInfo[1], MsgInfo[2]);
 });
 
