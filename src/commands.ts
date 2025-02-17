@@ -1,4 +1,4 @@
-import { ApplicationCommandData, GuildMember, ChatInputCommandInteraction, Collection, EmbedBuilder, ApplicationCommandOptionType } from "discord.js";
+import { ApplicationCommandData, GuildMember, ChatInputCommandInteraction, Collection, EmbedBuilder, ApplicationCommandOptionType, MessageFlags } from "discord.js";
 import { PlayerStatusInfo, SetGmodCommand, TerrorTownRoundStatus, TerrorTownStatus } from "./types";
 import { ServerEmbed, ServerStatus } from ".";
 import { GDRClient } from "./client";
@@ -38,8 +38,8 @@ const CommandsDefinition: GDRCommand[] = [
             }
         },
         async Execute({client, interaction}) {
-            await interaction.deferReply({ephemeral: true});
-            interaction.editReply({content: `📡 ${client.ws.ping}ms`, options: {ephemeral: true}});
+            await interaction.deferReply({flags: MessageFlags.Ephemeral});
+            interaction.editReply({content: `📡 ${client.ws.ping}ms`, options: {flags: MessageFlags.Ephemeral}});
         }
     },
     {
@@ -58,7 +58,7 @@ const CommandsDefinition: GDRCommand[] = [
         },
         async Execute({client, interaction}) {
             if (!ServerStatus) { // ServerEmbed
-                interaction.reply({content: "Hubo un error inesperado, intentelo denuevo.", ephemeral: true});
+                interaction.reply({content: "Hubo un error inesperado, intentelo denuevo.", flags: MessageFlags.Ephemeral});
                 return;
             }
 
@@ -163,13 +163,13 @@ const CommandsDefinition: GDRCommand[] = [
             const requiredRoleID = "884222069032759302"; // Reemplaza esto con el ID de tu rol
             const member = interaction.member as GuildMember;
             if (!member.roles.cache.some(role => role.id === requiredRoleID)) {
-                interaction.reply({content: "No tienes permiso para usar este comando.", ephemeral: true});
+                interaction.reply({content: "No tienes permiso para usar este comando.", flags: MessageFlags.Ephemeral});
                 return;
             }
 
             const command: string = await interaction.options.getString("cmd", true);
             SetGmodCommand(command);
-            interaction.reply({content: "Listo", ephemeral: true});
+            interaction.reply({content: "Listo", flags: MessageFlags.Ephemeral});
         }
     },
     {
@@ -186,7 +186,7 @@ const CommandsDefinition: GDRCommand[] = [
             const requiredRoleID = "884222069032759302"; // Reemplaza esto con el ID de tu rol
             const member = interaction.member as GuildMember;
             if (!member.roles.cache.some(role => role.id === requiredRoleID)) {
-                interaction.reply({content: "No tienes permiso para usar este comando.", ephemeral: true});
+                interaction.reply({content: "No tienes permiso para usar este comando.", flags: MessageFlags.Ephemeral});
                 return;
             }
 
@@ -214,7 +214,7 @@ const CommandsDefinition: GDRCommand[] = [
             const requiredRoleID = "884222069032759302"; // Reemplaza esto con el ID de tu rol
             const member = interaction.member as GuildMember;
             if (!member.roles.cache.some(role => role.id === requiredRoleID)) {
-                interaction.reply({content: "No tienes permiso para usar este comando.", ephemeral: true});
+                interaction.reply({content: "No tienes permiso para usar este comando.", flags: MessageFlags.Ephemeral});
                 return;
             }
 
@@ -224,8 +224,8 @@ const CommandsDefinition: GDRCommand[] = [
             const response: Response = await fetch(url, options);
             const data = await response.json();
             console.log(data);
-            
-            interaction.reply({content: "Ejecutado", ephemeral: true});
+
+            interaction.reply({content: "Ejecutado", flags: MessageFlags.Ephemeral});
         }
     }
 ];
