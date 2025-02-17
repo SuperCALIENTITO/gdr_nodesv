@@ -203,6 +203,30 @@ const CommandsDefinition: GDRCommand[] = [
         async Execute({client, interaction}) {
             
         }
+    },
+    {
+        ID: "restart",
+        Data: {
+            name: "restart",
+            description: "Performs a restart to the Garry's Mod server"
+        },
+        async Execute({client, interaction}) {
+            const requiredRoleID = "884222069032759302"; // Reemplaza esto con el ID de tu rol
+            const member = interaction.member as GuildMember;
+            if (!member.roles.cache.some(role => role.id === requiredRoleID)) {
+                interaction.reply({content: "No tienes permiso para usar este comando.", ephemeral: true});
+                return;
+            }
+
+            const url: string = ENV.RESTART_URL;
+            const options = {method: "POST", headers: {"mp-key": ENV.RESTART_PASSWORDKEY}};
+
+            const response: Response = await fetch(url, options);
+            const data = await response.json();
+            console.log(data);
+            
+            interaction.reply({content: "Ejecutado", ephemeral: true});
+        }
     }
 ];
 

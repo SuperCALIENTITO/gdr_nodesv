@@ -8,6 +8,8 @@ dotenv.config();
 interface ENV_INTERFACE {
     PORT: number;
     STEAM_KEY: string;
+    RESTART_URL: string;
+    RESTART_PASSWORDKEY: string;
     DISCORD_KEY: string;
     DISCORD_CHANNEL: string;
     DISCORD_TOKEN: string;
@@ -20,6 +22,8 @@ interface ENV_INTERFACE {
 export const ENV: ENV_INTERFACE = {
     PORT: Number(process.env.PORT) || 3000,
     STEAM_KEY: process.env.STEAM_KEY,
+    RESTART_URL: process.env.RESTART_URL,
+    RESTART_PASSWORDKEY: process.env.RESTART_PASSWORDKEY,
     DISCORD_KEY: process.env.DISCORD_KEY,
     DISCORD_CHANNEL: process.env.DISCORD_CHANNEL,
     DISCORD_TOKEN: process.env.DISCORD_TOKEN,
