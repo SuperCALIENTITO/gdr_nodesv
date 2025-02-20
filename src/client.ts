@@ -38,8 +38,8 @@ export class GDRClient extends Client {
     }
 
     public WriteLog(type: LogType = LogType.Error, log: string): void {
-        let CurrentTime = this.GetTime()
-        console.log(CurrentTime + " -" + type + log)
+        let CurrentTime = this.GetTime();
+        console.log(CurrentTime + " -" + type + log);
     }
 
     /**

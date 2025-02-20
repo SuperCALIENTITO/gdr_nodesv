@@ -33,12 +33,12 @@ const GDR = new GDRClient({ChannelID: ENV.DISCORD_CHANNEL, SteamKey: ENV.STEAM_K
 
 process.on("unhandledRejection", (error: Error) => {
     GDR.WriteLog(LogType.Error, `Unhandled Rejection`);
-    GDR.WriteLog(LogType.Error, `${error.stack}`);
+    console.error(error);
 });
 
 process.on("uncaughtException", (error: Error) => {
     GDR.WriteLog(LogType.Error, `Unhandled Exception`);
-    GDR.WriteLog(LogType.Error, `${error.stack}`);
+    console.error(error);
 });
 
 /*==========================
@@ -96,7 +96,7 @@ GDR.on(Events.InteractionCreate, async (interaction: Interaction): Promise<void>
 
     Command.Execute({client: GDR, interaction: interaction}).catch((Error: Error) => {
         GDR.WriteLog(LogType.Error, `Failed during execution of /${interaction.commandName}`);
-        GDR.WriteLog(LogType.Error, `${Error.stack}`);
+        console.error(Error);
     });
 })
 
@@ -117,12 +117,13 @@ GDR.on(Events.MessageCreate, async (message: Message): Promise<void> => {
 });
 
 GDR.on(Events.Error, (error) => {
-    GDR.WriteLog(LogType.Error, `Client Error: ${error}`);
+    GDR.WriteLog(LogType.Error, `Client Error`);
+    console.error(error);
 });
 
 GDR.login(ENV.DISCORD_TOKEN).catch((error) => {
     GDR.WriteLog(LogType.Error, `Unable to log in to Discord`);
-    GDR.WriteLog(LogType.Error, `${error.stack}`);
+    console.error(error);
     process.exit();
 });
 

@@ -98,7 +98,7 @@ const CommandsDefinition: GDRCommand[] = [
                 }
                 TableString = table(TableData, {columns: [{alignment: "left"}, {alignment: "left"}, {alignment: "right"}, {alignment: "right"}]});
             }
-            ServerInfoEmbed.addFields({name: "Jugadores", value: `\`\`\`\n${TableString}\n\`\`\``});
+            ServerInfoEmbed.addFields([{name: "Jugadores", value: `\`\`\`\n${TableString}\n\`\`\``}]);
             ServerInfoEmbed.setFooter({text: `${gamemode}`, iconURL: `${ENV.DISCORD_GAMEMODES_LINK}${gamemode_dir}.png`})
             ServerInfoEmbed.setImage(`${ENV.DISCORD_MAPS_LINK}${map}.png`);
             if (PlayingTerrorTown() && false) {
@@ -124,7 +124,7 @@ const CommandsDefinition: GDRCommand[] = [
                         if (TerrorTownStatus.founds > 0) { TerrorTownDescription.push(`**${TerrorTownStatus.founds}** Muertos Confirmados`); }
                     }
                 }
-                ServerInfoEmbed.addFields({name: "Estado de la Partida", value: TerrorTownDescription.join(`\n`)});
+                ServerInfoEmbed.addFields([{name: "Estado de la Partida", value: TerrorTownDescription.join(`\n`)}]);
             }
             interaction.reply({embeds: [ServerInfoEmbed]});
         }
