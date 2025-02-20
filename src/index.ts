@@ -96,7 +96,7 @@ GDR.on(Events.InteractionCreate, async (interaction: Interaction): Promise<void>
 
     Command.Execute({client: GDR, interaction: interaction}).catch((Error: Error) => {
         GDR.WriteLog(LogType.Error, `Failed during execution of /${interaction.commandName}`);
-        GDR.WriteLog(LogType.Error, `${Error}`);
+        GDR.WriteLog(LogType.Error, `${Error.stack}`);
     });
 })
 
