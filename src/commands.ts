@@ -113,7 +113,7 @@ const CommandsDefinition: GDRCommand[] = [
             ServerInfoEmbed.addFields([{name: "Jugadores", value: `\`\`\`\n${TableString}\n\`\`\``}]);
             ServerInfoEmbed.setFooter({text: `${gamemode}`, iconURL: `${ENV.DISCORD_GAMEMODES_LINK}${gamemode_dir}.png`})
             ServerInfoEmbed.setImage(`${ENV.DISCORD_MAPS_LINK}${map}.png`);
-            if (PlayingTerrorTown() && false) {
+            if (PlayingTerrorTown()) {
                 let TerrorTownStatus = meta as TerrorTownStatus;
 
                 let TerrorTownRoundString = {
