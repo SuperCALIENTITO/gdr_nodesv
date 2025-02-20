@@ -99,9 +99,9 @@ const CommandsDefinition: GDRCommand[] = [
                 TableString = table(TableData, {columns: [{alignment: "left"}, {alignment: "left"}, {alignment: "right"}, {alignment: "right"}]});
             }
             ServerInfoEmbed.addFields({name: "Jugadores", value: `\`\`\`\n${TableString}\n\`\`\``});
+            ServerInfoEmbed.setFooter({text: `${gamemode}`, iconURL: `${ENV.DISCORD_GAMEMODES_LINK}${gamemode_dir}.png`})
             ServerInfoEmbed.setImage(`${ENV.DISCORD_MAPS_LINK}${map}.png`);
-            ServerInfoEmbed.setThumbnail(`${ENV.DISCORD_GAMEMODES_LINK}${gamemode_dir}.png`);
-            if (PlayingTerrorTown()) {
+            if (PlayingTerrorTown() && false) {
                 let TerrorTownStatus = meta as TerrorTownStatus;
 
                 let TerrorTownRoundString = {
