@@ -3,7 +3,7 @@ import { PlayerStatusInfo, SetGmodCommand, TerrorTownRoundStatus, TerrorTownStat
 import { ServerEmbed, ServerStatus } from ".";
 import { GDRClient } from "./client";
 import { ENV } from "./env";
-import { table } from "table";
+import { getBorderCharacters, table, TableUserConfig } from "table";
 
 interface CommandRunOptions {client: GDRClient, interaction: ChatInputCommandInteraction}
 type CommandExecuteFunction = (options: CommandRunOptions) => Promise<any>;
@@ -96,7 +96,19 @@ const CommandsDefinition: GDRCommand[] = [
                     let name = player.bot ? `[BOT] ${player.name}` : player.name;
                     TableData.push([player.usergroup, name, player.score.toString(), time]);
                 }
-                TableString = table(TableData, {columns: [{alignment: "left"}, {alignment: "left"}, {alignment: "right"}, {alignment: "right"}]});
+
+                let TableConfig: TableUserConfig = {
+                    columns: [
+                        {alignment: "left"}, {alignment: "left"}, {alignment: "right"}, {alignment: "right"}
+                    ],
+                    border: getBorderCharacters('void'),
+                    columnDefault: {
+                        paddingLeft: 0,
+                        paddingRight: 1
+                    },
+                    drawHorizontalLine: () => false
+                };
+                TableString = table(TableData, TableConfig);
             }
             ServerInfoEmbed.addFields([{name: "Jugadores", value: `\`\`\`\n${TableString}\n\`\`\``}]);
             ServerInfoEmbed.setFooter({text: `${gamemode}`, iconURL: `${ENV.DISCORD_GAMEMODES_LINK}${gamemode_dir}.png`})
